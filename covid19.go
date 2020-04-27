@@ -1,44 +1,21 @@
 package main
 
-import  (
-	"fmt"
-	"net/http"
-	"io/ioutil"
-	// "io"
-	"encoding/json"
-	// "strings"
-	"log"
-	"time"
+import (
+    // "bytes"
+    // "encoding/json"
+    "fmt"
+    "io/ioutil"
+    "net/http"
 )
 
-type covid19 struct {
-	Number  int `json:"number"`
-}
-
 func main() {
-	fmt.Println("Starting the application...")
-	url := "http://api.open-notify.org/astros.json"
-	spaceClient := http.Client{
-		Timeout: time.Second * 2, // Maximum of 2 secs
-	}
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	req.Header.Set("User-Agent", "spacecount-tutorial")
-	res, getErr := spaceClient.Do(req)
-	if getErr != nil {
-		log.Fatal(getErr)
-	}
-	body, readErr := ioutil.ReadAll(res.Body)
-	if readErr != nil {
-		log.Fatal(readErr)
-	}
-	data := covid19{}
-	jsonErr := json.Unmarshal(body, &data)
-	if jsonErr != nil {
-		fmt.Println(jsonErr)
-		return
-	}
-	fmt.Println(data.Number)
+    fmt.Println("Starting the application...")
+    response, err := http.Get("https://api.thevirustracker.com/free-api?global=stats")
+    if err != nil {
+        fmt.Printf("The HTTP request failed with error %s\n", err)
+    } else {
+        data, _ := ioutil.ReadAll(response.Body)
+        fmt.Println(string(data))
+    }
+    fmt.Println("Terminating the application...")
 }
